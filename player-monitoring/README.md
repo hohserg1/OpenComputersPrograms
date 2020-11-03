@@ -1,6 +1,8 @@
 # Player Monitoring
 This is a distributed system program for logging of player visiting
+
 Supported Computronics Radar and OpenSecurity Entity Detector
+
 ## Setup guide
 1. Install HoverHelm
 2. Setup devices for regular radars
