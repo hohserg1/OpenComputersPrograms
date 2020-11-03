@@ -29,8 +29,6 @@ local function playerColor(nickname)
 end
 
 
---local h = filesystem.open("radarLog.txt","w")
-
 local gistSendingCache = {}
 
 
