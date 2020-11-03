@@ -14,12 +14,12 @@ Supported Computronics Radar and OpenSecurity Entity Detector
             1) Open rserver.lua for edit
             2) Create new secret gist and insert gist id to rserver.lua configuration section
             3) Create new OAuth token and insert to rserver.lua configuration section
-                    1) Visit https://github.com/settings/tokens
-                    2) Press [Generate new token]
-                    3) Turn off all options
-                    4) Turn on "gist" option 
+                    - Visit https://github.com/settings/tokens
+                    - Press [Generate new token]
+                    - Turn off all options
+                    - Turn on "gist" option 
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help1.png?raw=true)
-                    5) Press [Generate token]
+                    - Press [Generate token]
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help2.png?raw=true)
             4) Configure other options of rserver.lua
     3) Copy `/lib/config.lua` from device_core to radar server folder
