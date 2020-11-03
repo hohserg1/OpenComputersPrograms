@@ -18,6 +18,7 @@ Supported Computronics Radar and OpenSecurity Entity Detector
             - Press [Generate new token]
             - Turn off all options
             - Turn on "gist" option 
+            
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help1.png?raw=true)
             - Press [Generate token]
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help2.png?raw=true)
