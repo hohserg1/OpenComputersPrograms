@@ -11,9 +11,9 @@ Supported Computronics Radar and OpenSecurity Entity Detector
 3. Setup device for radar server
     + Device hardware must contains CPU, Memory 1 tier x2, Wireless(or wired) network card 2 tier, prepared EEPROM, GPU, Screen, one `Entity Detector`
     + Download `rserver.lua` to `/home/hoverhelm/devices/<RADAR SERVER DEVICE NAME>/programs/`
-            1) Open rserver.lua for edit
-            2) Create new secret gist and insert gist id to rserver.lua configuration section
-            3) Create new OAuth token and insert to rserver.lua configuration section
+            * Open rserver.lua for edit
+            * Create new secret gist and insert gist id to rserver.lua configuration section
+            * Create new OAuth token and insert to rserver.lua configuration section
                     - Visit https://github.com/settings/tokens
                     - Press [Generate new token]
                     - Turn off all options
@@ -21,6 +21,6 @@ Supported Computronics Radar and OpenSecurity Entity Detector
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help1.png?raw=true)
                     - Press [Generate token]
                        ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help2.png?raw=true)
-            4) Configure other options of rserver.lua
+            * Configure other options of rserver.lua
     + Copy `/lib/config.lua` from device_core to radar server folder
     + Configure autorun to `rserver`
