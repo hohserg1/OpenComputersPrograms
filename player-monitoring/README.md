@@ -1,4 +1,4 @@
-$ Playermonitoring
+# Player Monitoring
 This is a distributed system program for logging of player visiting
 Supported Computronics Radar and OpenSecurity Entity Detector
 ## Setup guide
@@ -17,9 +17,9 @@ Supported Computronics Radar and OpenSecurity Entity Detector
       1) Visit https://github.com/settings/tokens
       2) Press [Generate new token]
       3) Turn off all options
-      4) Turn on "gist" option https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help1.png?raw=true
+      4) Turn on "gist" option ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help1.png?raw=true)
       5) Press [Generate token]
-      https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help2.png?raw=true
+      ![help](https://github.com/hohserg1/OpenComputersPrograms/blob/master/player-monitoring/help2.png?raw=true)
     4) Configure other options of rserver.lua
   3) Copy `/lib/config.lua` from device_core to radar server folder
   4) Configure autorun to `rserver`
