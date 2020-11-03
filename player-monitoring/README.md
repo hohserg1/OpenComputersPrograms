@@ -4,10 +4,10 @@ Supported Computronics Radar and OpenSecurity Entity Detector
 ## Setup guide
 1. Install HoverHelm
 2. Setup devices for regular radars
-    1) Device hardware must contains CPU, Memory 1.5 tier, Wireless(or wired) network card 2 tier, prepared EEPROM, any amount of `Radar`-s and `Entity Detector`-s
-    2) Download `radar-client.lua` to `/home/hoverhelm/device_core/programs/`
-    3) Copy `/lib/config.lua` from device_core to device folders of all radar devices
-    4) Configure autorun to `radar-client`
+    + Device hardware must contains CPU, Memory 1.5 tier, Wireless(or wired) network card 2 tier, prepared EEPROM, any amount of `Radar`-s and `Entity Detector`-s
+    + Download `radar-client.lua` to `/home/hoverhelm/device_core/programs/`
+    + Copy `/lib/config.lua` from device_core to device folders of all radar devices
+    + Configure autorun to `radar-client`
 3. Setup device for radar server
     1) Device hardware must contains CPU, Memory 1 tier x2, Wireless(or wired) network card 2 tier, prepared EEPROM, GPU, Screen, one `Entity Detector`
     2) Download `rserver.lua` to `/home/hoverhelm/devices/<RADAR SERVER DEVICE NAME>/programs/`
