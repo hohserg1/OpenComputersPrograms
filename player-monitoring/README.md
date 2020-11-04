@@ -1,4 +1,4 @@
-# Player Monitoring
+# PlayerMonitoring
 This is a distributed system program for logging of player visiting
 
 Supported Computronics Radar and OpenSecurity Entity Detector
