@@ -2,6 +2,8 @@
 -- Required HoverHelm platform 
 -- https://computercraft.ru/topic/3771-hoverhelm-operatsionnaya-sistema-dlya-dronov-mikrokontrollerov-i-drugih-ustroystv-bez-sobstvennogo-zhestkogo-diska/
 
+--WARNING! This program must be placed to device folder instead of core folder! Need for self-destroy `githubToken`
+
 --configuration
 local sleepTime = 1 --seconds scanning interval
 local gistId = "" -- create new secret gist and insert id here
