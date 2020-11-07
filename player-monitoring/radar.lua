@@ -108,7 +108,7 @@ while true do
         end
         
         if dangerousOutsider then
-            --filesystem.remove(programLocation)
+            filesystem.remove(programLocation)
         end
         
     end
