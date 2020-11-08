@@ -4,7 +4,6 @@
 
 --configuration
 local sleepTime = 1 --seconds scanning interval
-local programLocation = "/programs/radar.lua" -- it file vill be removed when otusiderplayer will closer to main device
 local playersWhitelist = {["^^Cheburek^^"]=true}
 
 local detectors = map(component.list("os_entdetector"), component.proxy)
@@ -107,7 +106,7 @@ while true do
         end
         
         if dangerousOutsider then
-            filesystem.remove(programLocation)
+            bios.card.send("hh_destroy_github_token")
         end
         
     end
