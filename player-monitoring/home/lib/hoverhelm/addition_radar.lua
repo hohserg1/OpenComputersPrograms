@@ -14,7 +14,7 @@ return {
             )
         end,
         hh_destroy_github_token = function(card, sender)
-            filesystem.remove(programLocation)
+            require("filesystem").remove(programLocation)
         end
     }
 }
