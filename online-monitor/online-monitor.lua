@@ -1,5 +1,5 @@
 local stemChannel = "test"
-local serverName = "Test1"
+local serverName = "Test"
 local greetingTime = 10 --seconds
 local onlineCheckPeriod = 10 --seconds
 
@@ -44,8 +44,8 @@ end
 send("start_session", {serverName=serverName})
 
 local knownServers = {}
-local knownPlayers = {hohserg="admin"}
-local groupColors = {["admin"]=0xff0000, moder=0x0000ff}
+local knownPlayers = {}--{hohserg="admin"}
+local groupColors = setmetatable({["admin"]=0xff0000, moder=0x0000ff},{__index=function()return 0xffffff end})
 local groupOrder = {"admin","moder"}
 
 do
@@ -101,9 +101,29 @@ local function flushOnline()
     
     local grouped = {}
     
-    for playerName, group in pairs(knownPlayers) do
-        grouped[group] = grouped[group] or {}
+    for playerName,group in pairs(knownPlayers) do
+        grouped[group]=grouped[group] or {}
         grouped[group][playerName]=prevOnline[playerName] or "offline"
+        prevOnline[playerName]=nil
+    end
+    
+    for playerName, serverName in pairs(prevOnline) do
+        local group
+        send("unknow_player",{playerName=playerName})
+        print("not fine")
+        while not group do
+            local message = select(3, event.pull('stem_message',stemChannel))
+            if message then
+                message = serialization.unserialize(message)
+                if message.name=="update_player" then
+                    group=message.group
+                    knownPlayers[playerName]=group
+                    print("fine")
+                end
+            end
+        end
+        grouped[group]=grouped[group] or {}
+        grouped[group][playerName]=serverName
     end
     
     gpu.fill(1,4,xresolution,52," ")
@@ -131,6 +151,44 @@ event.listen('stem_message', function(_, _, message)
     elseif message.name=="start_session" then
         knownServers[message.serverName]=true
         send("greet",{serverName=serverName})
+    elseif message.name=="add_player" then
+        knownPlayers[message.playerName]=message.group
+    elseif message.name=="remove_player" then
+        knownPlayers[message.playerName]=nil
+    elseif message.name=="unknow_player" then
+        local foundGroup = knownPlayers[message.playerName]
+        if foundGroup then
+            send("update_player",{playerName=message.playerName,group=foundGroup})
+        end  
+    end
+end)
+
+local function split(str, separator)
+    local r = {}
+    for ri in string.gmatch(str, "([^" .. separator .. "]+)") do
+        table.insert(r, ri)
+    end
+    return r
+end
+
+local function isPermited(playerName)
+    return knownPlayers[playerName]=="admin" or true
+end
+
+event.listen('chat_message', function(_, _, playerName, message)
+    if isPermited(playerName) then
+        if message:sub(1,2)=="##" then
+            local cmd = split(message:sub(3)," ")
+            if cmd[1]=="adduser" then
+                knownPlayers[cmd[2]]=cmd[3]
+                send("add_player",{playerName=cmd[2],group=cmd[3]})
+            
+            elseif cmd[1]=="deluser" then
+                knownPlayers[cmd[2]]=nil
+                send("remove_player",{playerName=cmd[2]})        
+            end
+            
+        end
     end
 end)
 
