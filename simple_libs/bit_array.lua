@@ -123,7 +123,14 @@ local baseBitArray = {
         
         countOf =  function(self,v)
             return choice10(v, countOfOnesInArray,countOfZerosInArray)(self)
-        end
+        end,
+        
+        setArray = checkIndexBounds(function(self,i, array)
+            i=i-1
+            for j=1,math.min(self.size-i,array.size) do
+                self:set(i+j,array:get(j))
+            end
+        end)
     }
 }
 
