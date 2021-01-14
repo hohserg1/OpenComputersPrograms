@@ -125,16 +125,27 @@ local baseBitArray = {
             return choice10(v, countOfOnesInArray,countOfZerosInArray)(self)
         end,
         
-        setArray = checkIndexBounds(function(self,i, array)
-            i=i-1
-            for j=1,math.min(self.size-i,array.size) do
-                self:set(i+j,array:get(j))
+        setArray = checkIndexBounds(function(target, targetFromIndex, source, sourceFromIndex, sourceToIndex)
+            fromIndex = fromIndex or 1
+            toIndex = toIndex or array.size
+            
+            local dir = fromIndex<toIndex and 1 or -1            
+            local len = math.abs(toIndex-fromIndex)+1            
+            local targetToIndex = math.min(targetFromIndex+len-1, target.size)
+            
+            local i=targetFromIndex
+            local j=fromIndex
+            while not (j==toIndex or i==targetToIndex) do
+                target:set(i,source:get(j))
+                
+                i=i+1
+                j=j+dir
             end
         end)
     }
 }
 
-local allOnes = -1 --lol
+local allOnes = -1
 local allZeros = 0
 
 local function create(size_in_bits, fill)
@@ -152,6 +163,21 @@ function bit_array.create(size_in_bits, fill)
         return create(size_in_bits.size_in_bits, size_in_bits.fill)
     else
         return create(size_in_bits,fill)
+    end
+end
+
+local function createBasedOn(array,fromIndex,toIndex)
+    local len = math.abs(toIndex-fromIndex)+1
+    local r = create(len)
+    r:setArray(array,1,fromIndex,toIndex)
+    return r
+end
+
+function bit_array.createBasedOn(array,fromIndex,toIndex)
+    if type(array)=="table" then
+        return createBasedOn(array.array, array.fromIndex, array.toIndex)
+    else
+        return createBasedOn(array,fromIndex,toIndex)
     end
 end
 
