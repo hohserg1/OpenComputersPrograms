@@ -46,11 +46,18 @@
     --also
     a:countOf(0)
 
+    --to string
+    local stringRepr = a:toString()
+
+    --from string
+    local b = bit_array.fromString(stringRepr)
+
 ]]--
 
 local bit_array={}
 
 local bits_in_integer = 64
+local bytesPerInt = bits_in_integer//8
 
 local function checkIndexBounds(f)
     return function(self,i,...)
@@ -141,28 +148,41 @@ local baseBitArray = {
                 i=i+1
                 j=j+dir
             end
-        end)
+        end),
+        
+        toString = function(self)
+            local r = {}
+            
+            for i=1, #self.data do
+                local int = self.data[i]
+                for j=0,bytesPerInt-1 do
+                    table.insert(r,string.char(int>>(j*8) & 0xff))
+                end
+            end
+            
+            return table.concat(r)
+        end
     }
 }
 
 local allOnes = -1
 local allZeros = 0
 
-local function create(size_in_bits, fill)
+local function create(sizeInBits, fill)
     fill = choice10(fill or false, allOnes, allZeros)
-    local count_of_ints = math.ceil(size_in_bits/bits_in_integer)
+    local countOfInts = math.ceil(sizeInBits/bits_in_integer)
     local data = {}
-    for i=1, count_of_ints do
+    for i=1, countOfInts do
         data[i] = fill
     end
-    return setmetatable({data = data, size=size_in_bits},baseBitArray)
+    return setmetatable({data = data, size=sizeInBits},baseBitArray)
 end
 
-function bit_array.create(size_in_bits, fill)
-    if type(size_in_bits)=="table" then
-        return create(size_in_bits.size_in_bits, size_in_bits.fill)
+function bit_array.create(sizeInBits, fill)
+    if type(sizeInBits)=="table" then
+        return create(sizeInBits.sizeInBits, sizeInBits.fill)
     else
-        return create(size_in_bits,fill)
+        return create(sizeInBits,fill)
     end
 end
 
@@ -179,6 +199,19 @@ function bit_array.createBasedOn(array,fromIndex,toIndex)
     else
         return createBasedOn(array,fromIndex,toIndex)
     end
+end
+
+function bit_array.fromString(str)
+    local countOfInts = #str//bytesPerInt
+    local r = create(countOfInts*bits_in_integer)
+    
+    for i=1,countOfInts do
+        for j=0,bytesPerInt-1 do
+            r.data[i] = r.data[i] | (str:byte((i-1)*bytesPerInt+1+j)<<(8*j))
+        end
+    end
+    
+    return r
 end
 
 return bit_array
