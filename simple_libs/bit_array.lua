@@ -3,16 +3,16 @@
     local bit_array = require("bit_array")
 
     --create new bite array with size 100 and filled with ones
-    local a = bit_array.create{size_in_bits = 100, fill = 1}
+    local a = bit_array.create{sizeInBits = 100, fill = 1}
     --also
     local a = bit_array.create(100, 1)
     --also
     local a = bit_array.create(100, true)
 
     --create new bite array with size 100 and filled with zeros
-    local a = bit_array.create{size_in_bits = 100, fill = 0}
+    local a = bit_array.create{sizeInBits = 100, fill = 0}
     --also
-    local a = bit_array.create{size_in_bits = 100}
+    local a = bit_array.create{sizeInBits = 100}
     --also
     local a = bit_array.create(100)
     --also
@@ -45,7 +45,7 @@
     a:countOf(false)
     --also
     a:countOf(0)
-
+    
     --to string
     local stringRepr = a:toString()
 
