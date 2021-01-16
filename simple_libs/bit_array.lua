@@ -117,11 +117,9 @@ end
 local baseBitArray = {
     __index = {
         set = checkIndexBounds(prepareDataIndex(function(self, int_i, local_i, v)
-            if v then
-                self.data[int_i] = self.data[int_i] | (1<<local_i)
-            else
-                self.data[int_i] = self.data[int_i] & ~(1<<local_i)                
-            end
+            self.data[int_i] = choice10(v, 
+                                            self.data[int_i] | (1<<local_i), 
+                                            self.data[int_i] & ~(1<<local_i))
         end)),
         
         get = checkIndexBounds(prepareDataIndex(function(self, int_i, local_i)
@@ -133,21 +131,22 @@ local baseBitArray = {
         end,
         
         setArray = checkIndexBounds(function(target, targetFromIndex, source, sourceFromIndex, sourceToIndex)
-            fromIndex = fromIndex or 1
-            toIndex = toIndex or array.size
+            sourceFromIndex = sourceFromIndex or 1
+            sourceToIndex = sourceToIndex or source.size
             
-            local dir = fromIndex<toIndex and 1 or -1            
-            local len = math.abs(toIndex-fromIndex)+1            
+            local dir = sourceFromIndex<sourceToIndex and 1 or -1            
+            local len = math.abs(sourceToIndex-sourceFromIndex)+1            
             local targetToIndex = math.min(targetFromIndex+len-1, target.size)
             
             local i=targetFromIndex
-            local j=fromIndex
-            while not (j==toIndex or i==targetToIndex) do
-                target:set(i,source:get(j))
+            local j=sourceFromIndex
+            repeat
+                print(source:get(j))
+                --target:set(i,source:get(j))
                 
                 i=i+1
                 j=j+dir
-            end
+            until j==sourceToIndex or i==targetToIndex
         end),
         
         toString = function(self)
@@ -161,7 +160,17 @@ local baseBitArray = {
             end
             
             return table.concat(r)
-        end
+        end,
+        
+        getInt = checkIndexBounds(function(self, fromIndex, toIndex)
+            local dir = fromIndex<toIndex and -1 or 1   
+            local r = 0
+            for i=toIndex,fromIndex,dir do
+                r = r << 1
+                r = r | self:get(i)
+            end
+            return r
+        end)
     }
 }
 
