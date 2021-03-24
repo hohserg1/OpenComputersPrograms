@@ -152,7 +152,6 @@ local function onModemMessage(msg, ...)
         local pos = glasses.getUserPosition()[1]
         cx,cy,cz = pos.x//1,pos.y//1+1,pos.z//1
         glasses.removeAll()
-        print(elevation,height)
         addInvertedCube(elevation, height, size,cx,cy,cz)
         oreWidget = glasses.addOBJModel3D()
         oreWidget.setViewDistance(math.huge)
