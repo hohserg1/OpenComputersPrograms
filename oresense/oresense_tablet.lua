@@ -10,13 +10,13 @@ if computer.getArchitecture()=="Lua 5.2" then
     computer.setArchitecture("Lua 5.3")
 end
 
-local function split(str, separator)
-    local r = {}
-    for ri in string.gmatch(str, "([^" .. separator .. "]+)") do
-        table.insert(r, ri)
-    end
-    return table.unpack(r)
-end
+--forms variables
+local forms, Scan,Form1, Frame1, Button1, netcardsList, portEdit, widthEdit, heightEdit, yOffsetEdit
+local Label1,Label12,Label13,Label14,Label15,Label3,Label4,Label5,Label6,Label7,Label8,Label9
+
+
+--local startMemory=computer.freeMemory()
+   
 
 local hardness, size, elevation, height = 3, 7, -32, 64
 local card
@@ -113,6 +113,7 @@ end
 
 local function visualize()
 
+    --local startEnergy=computer.energy()
     --local start=computer.uptime()
 
     send("init",hardness, size, elevation, height)
@@ -156,14 +157,14 @@ local function visualize()
     Scan.caption = "Scan"
     Scan:redraw()
     
-    --print("scantime",computer.uptime()-start,"seconds")
+    --print("scan time",computer.uptime()-start)
+    --print("scan energy",computer.energy()-startEnergy, computer.energy(), computer.maxEnergy())
 end
 
 
 local function clamp(v, min, max)
     return math.max(math.min(max,v),min)
 end
-
 
 
 local gpu = component.gpu
@@ -209,6 +210,7 @@ for address, type in component.list("modem") do
 end
 
 Scan=Form1:addButton(60.0,8.0,"Scan", function()
+    --print("memory diff",computer.freeMemory()-startMemory, computer.totalMemory())
     visualize(hardness,size)
 end)
 Scan.color=16711680
