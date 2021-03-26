@@ -38,15 +38,23 @@ Stationary computer build
 
 ## Usage
 Connect AR glasses to terminal and equip it.
+
 Run oresense_server
+
 Run oresense_tablet. Blue fieldsis editable. Big red button for start scaning. Do not move throughout of sccaning process.
+
 Look around after scaning - orewill be highlighted by frame cubes.
 
 ## Credits
 Thx @zgyr and other for article about geolizer principles
+
 Thx @Zer0Galaxy for library forms
+
 Thx @BrightYC for gui review
+
 Thx @Sainthozier for gui review
+
 Thx @Fingercomp for function of indexing coords
+
 Thx peoples fromirc #cc.ru for support with OC andLua
 
