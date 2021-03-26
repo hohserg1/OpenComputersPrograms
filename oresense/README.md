@@ -24,12 +24,13 @@ The stationary computer with the OpenGlasses2 terminal and the network map recei
 
 ## Install
 Minimal tablet build
+
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-tablet.png)
-
 Recomended tablet build
-![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/recomended-requirements-tablet.png)
 
+![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/recomended-requirements-tablet.png)
 Stationary computer build
+
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server.png)
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server-2.png)
 
