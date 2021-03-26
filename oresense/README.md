@@ -20,11 +20,14 @@ The stationary computer with the OpenGlasses2 terminal and the network map recei
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/2021-03-24_16.30.02.png)
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/2021-03-24_17.32.42.png)
 ## Video
-https://youtu.be/m0JKtMSZ6q8
+[![](http://img.youtube.com/vi/m0JKtMSZ6q8/0.jpg)](http://www.youtube.com/watch?v=m0JKtMSZ6q8 "Video Title")
 
 ## Install
+Minimal tablet build
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-tablet.png)
+Recomended tablet build
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/recomended-requirements-tablet.png)
+Stationary computer build
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server.png)
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server-2.png)
 
