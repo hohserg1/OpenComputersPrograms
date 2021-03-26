@@ -36,6 +36,22 @@ Stationary computer build
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server.png)
 ![](https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/min-requirements-server-2.png)
 
+
++ Install OpneOS of computer and tablet
++ Install OreSense and libs to table
+
+wget https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/oresense_tablet.lua
+
+wget https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/simple_libs/bit_array.lua lib/bit_array.lua
+
+pastebin get iKzRve2g lib/forms.lua
+
++ Install OreSense and libs to computer
+
+wget https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/oresense/oresense_server.lua
+
+wget https://raw.githubusercontent.com/hohserg1/OpenComputersPrograms/master/simple_libs/bit_array.lua lib/bit_array.lua
+
 ## Usage
 Connect AR glasses to terminal and equip it.
 
