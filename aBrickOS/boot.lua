@@ -278,7 +278,7 @@ while true do
                 selected=(selected+1) % (#currentContent+1)
                 fixScroll()
             
-            elseif code==right || code==enter then
+            elseif code==right or code==enter then
                 moveForward()
             
             elseif code==left then
@@ -296,7 +296,7 @@ while true do
             elseif code==down then
                 menuSelected=(menuSelected+1) % (#menuContent+1)
             
-            elseif code==right || code==enter then
+            elseif code==right or code==enter then
                 applyMenuFiles()
             
             elseif code==left or code==menu then
