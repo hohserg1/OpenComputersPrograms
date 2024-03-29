@@ -32,7 +32,7 @@ If you have internet card, just execute `pastebin run HHwNLs39`.
 Otherwise you can copy content of `boot_compressed.lua` to your disk and execute `flash -q boot_compressed.lua aBrickOS`
 
 ## Usage
-For navigate in any menu use [🠕] and [🠗] keys.
+To navigate in any menu use [🠕] and [🠗] keys.
 
 Key [🠔] will close menu or step back.
 
@@ -50,4 +50,4 @@ Context menu of file has items `edit`,`execute`,`rename`,`delete`,`copy`,`cut` a
 
 Context menu of editor has items `save` and `close`.
 
-For quite from lua interpreter enter `:q`.
+To quite from lua interpreter enter `:q`.
