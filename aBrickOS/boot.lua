@@ -55,6 +55,7 @@ local function prettyErrorPCall(failureMsg, f, ...)
     if not ok then
         prettyError(failureMsg, err)
     end
+    return ok,err
 end
 
 local function drawList(self)
@@ -237,13 +238,20 @@ local function openEditor(fileName)
     
     local file = fsInvoke("open", fileName)
     if file then
-        while true do
-            local chunk = fsInvoke("read", file, math.huge)
-            if chunk then
-                splitByLines(chunk)
-            else
-                break
-            end
+        if not
+            prettyErrorPCall("Can't read file", function()
+                while true do
+                    local chunk = fsInvoke("read", file, math.huge)
+                    if chunk then
+                        splitByLines(chunk)             
+                    else
+                        break
+                    end
+                end
+            end)
+        then
+            state = stateFiles
+            return
         end
     end
     
@@ -452,13 +460,19 @@ local menuActions = {
         local fileName = currentPath..filesList.content[filesList.selected]
         local file = fsInvoke("open", fileName)
         local code = ""
-        while true do
-            local chunk = fsInvoke("read", file, math.huge)
-            if chunk then
-                code=code..chunk
-            else
-                break
-            end
+        if 
+            not prettyErrorPCall("Can't read file", function()
+                while true do
+                    local chunk = fsInvoke("read", file, math.huge)
+                    if chunk then
+                        code=code..chunk
+                    else
+                        break
+                    end
+                end
+            end)
+        then
+            return
         end
         
         if fileName=="/init.lua" then
