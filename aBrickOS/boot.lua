@@ -460,6 +460,15 @@ local menuActions = {
                 break
             end
         end
+        
+        if fileName=="/init.lua" then
+            computer.getBootAddress = function()
+                return fs[currentFilesystem]
+            end
+            computer.setBootAddress = function()
+            end
+        end
+        
         local func, compileErr = load(code,fsPrefix(fileName))
         if func then
             local ok, execErr = pcall(func)
