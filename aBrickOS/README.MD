@@ -44,10 +44,10 @@ Key [≡] will open context menu or close opened context menu.
 
 Context menu of "⬅" has items `new file`,`new folder`,`paste` and `lua`.
 
-Context menu of folder has items "rename","delete","copy","cut" and "lua".
+Context menu of folder has items `rename`,`delete`,`copy`,`cut` and `lua`.
 
-Context menu of file has items "edit","execute","rename","delete","copy","cut" and "lua".
+Context menu of file has items `edit`,`execute`,`rename`,`delete`,`copy`,`cut` and `lua`.
 
-Context menu of editor has items "save" and "close".
+Context menu of editor has items `save` and `close`.
 
-For quite from lua interpreter enter ":q".
+For quite from lua interpreter enter `:q`.
