@@ -136,15 +136,7 @@ local filesList = {
             self.content = fsInvoke("list", currentPath)
             table.insert(self.content, 1, "⬅")
         else
-            fsList={}
-            for a in fsComponentList do
-                local name = invoke(a,"getLabel")
-                if not name then
-                    name = a
-                end
-                name = name.."/"
-                fsList[#fsList+1]=name
-            end
+            refreshFSList()
             self.content = fsList
         end
         self.selected = 1
@@ -161,6 +153,8 @@ local function input(request)
     gpu.set(26,15,request)
     gpu.set(26,16,">")
     while true do
+        gpu.setBackground(0xffffff)
+        gpu.set(27+#r,16," ")
         local event,_,value,code,_ = computer.pullSignal()
         if event=="key_down" or event=="clipboard" then
             if code==enter then
@@ -170,9 +164,11 @@ local function input(request)
             else
                 r=r..unicode.char(value)
             end
+            gpu.setBackground(0)
             gpu.set(27,16,r..(" "):rep(25))
         end        
     end
+    gpu.setBackground(0)
     gpu.fill(25,14,26,3, " ")
     return r
 end
@@ -183,6 +179,209 @@ local stateEditor=3
 local stateMenuEditor=4
 local stateLua=5
 local state = stateFiles
+
+local function openEditor(fileName)
+    state = stateEditor
+    local cursorX,cursorY=1,1
+    local contentLines={""}
+    local currentLine=1
+    local currentCol=1
+    
+    local function splitByLines(chunk)
+        local endOfLine = chunk:find("\n")
+        if endOfLine then
+            contentLines[#contentLines] = contentLines[#contentLines]..chunk:sub(1,endOfLine-1)
+            contentLines[#contentLines+1] = ""
+            splitByLines(chunk:sub(endOfLine+1))
+        else
+            contentLines[#contentLines] = contentLines[#contentLines]..chunk        
+        end    
+    end
+    
+    local file = fsInvoke("open", fileName)
+    if file then
+        while true do
+            local chunk = fsInvoke("read", file, math.huge)
+            if chunk then
+                splitByLines(chunk)
+            else
+                break
+            end
+        end
+    end
+    
+    local function drawText()
+        gpu.setForeground(0xffffff)
+        gpu.setBackground(0)
+        
+        gpu.fill(1,2,w,h," ")
+        local topLine = currentLine-cursorY+1
+        local bottomLine = math.min(#contentLines, topLine+14)
+        local y=2
+        for i=topLine,bottomLine do
+            gpu.set(1,y,contentLines[i]:sub(currentCol-cursorX+1))
+            y=y+1
+        end
+        
+        gpu.setForeground(0)
+        gpu.setBackground(0xffffff)
+        
+        local selectedChar = contentLines[currentLine]:sub(currentCol,currentCol)
+        gpu.set(cursorX,cursorY+1, #selectedChar==0 and " " or selectedChar)
+        
+        gpu.set(#fileName+2,1,"  Ln:"..currentLine.." Col:"..currentCol..(" "):rep(50))
+    end
+    
+    local function normalizeX()
+        local shift = currentCol-math.min(currentCol,#contentLines[currentLine]+1)
+        currentCol=currentCol-shift
+        cursorX=cursorX-shift
+        cursorX = math.max(1,math.min(cursorX,w))
+    end
+    
+    local function moveUp()
+        cursorY = math.max(1, cursorY-1)
+        currentLine = math.max(1, currentLine-1)
+        normalizeX()
+    end
+    
+    local function moveDown()
+        cursorY = math.min(h-1, cursorY+1)
+        currentLine = math.min(#contentLines, currentLine+1)
+        normalizeX()
+    end
+    
+    local function moveLeft()
+        if currentCol==1 and currentLine>1 then
+            currentCol=#contentLines[currentLine-1]+1
+            cursorX=math.min(w, currentCol)
+            moveUp()
+        else
+            cursorX = math.max(1, cursorX-1)
+            currentCol = math.max(1, currentCol-1)
+        end
+    end
+    
+    local function moveRight()
+        if currentCol==#contentLines[currentLine]+1 and currentLine<#contentLines then
+            cursorX=1
+            currentCol=1
+            moveDown()
+        else
+            cursorX = math.min(w, cursorX+1)
+            currentCol = math.min(#contentLines[currentLine]+1, currentCol+1)
+        end
+    end
+    
+    local editorMenuList = {
+        x=50-14-1,y=5,w=9,h=4, 
+        fontColor=0,backColor=0xffffff,
+        content={"save","close"},
+        selected = 1,
+        scrollShift = 0,
+        drawAddition = function(self)
+            gpu.set(self.x,self.y, ("▀"):rep(self.w))
+            gpu.set(self.x,self.y+self.h-1, ("▄"):rep(self.w))
+        end,
+        
+        choose = function(self)
+            if self.selected==1 then
+                local file = fsInvoke("open", fileName, "w")
+                if file then
+                    for _,line in pairs(contentLines) do
+                        fsInvoke("write", file, line)
+                        fsInvoke("write", file, "\n")
+                    end
+                    fsInvoke("close", file)      
+                else
+                    prettyError("unable to save file","kinda disk is readonly")
+                end
+                state = stateEditor
+            else
+                state = stateFiles
+            end
+        end,
+        
+        close = function(self)
+            self.selected = 1
+            state=stateEditor
+        end
+    }
+    
+    
+    gpu.setForeground(0)
+    gpu.setBackground(0xffffff)
+    gpu.set(1,1," "..fileName)
+    
+    while true do
+        if state == stateEditor then
+            drawText()
+        elseif state==stateMenuEditor then
+            drawList(editorMenuList) 
+        else
+            return
+        end
+        local event,_,value,code,_ = computer.pullSignal()
+        if event=="key_down" then
+            if state == stateEditor then
+                if code==up then
+                    moveUp()
+                
+                elseif  code==down then
+                    moveDown()
+                
+                elseif  code==left then
+                    moveLeft()
+                
+                elseif  code==right then
+                    moveRight()
+                    
+                elseif code==enter then
+                    table.insert(contentLines,currentLine+1,contentLines[currentLine]:sub(currentCol))
+                    contentLines[currentLine]=contentLines[currentLine]:sub(1,currentCol-1)
+                    cursorX=1
+                    currentCol=1
+                    moveDown()
+                    
+                elseif code==backspace then
+                    if currentCol==1 and currentLine>1 then
+                        currentCol = #contentLines[currentLine-1]+1
+                        cursorX = currentCol>w and math.max(1,w-math.min(w/2,#contentLines[currentLine])) or currentCol
+                        contentLines[currentLine-1]=contentLines[currentLine-1]..contentLines[currentLine]
+                        table.remove(contentLines, currentLine)
+                        moveUp()
+                    else
+                        contentLines[currentLine]=contentLines[currentLine]:sub(1,currentCol-2)..contentLines[currentLine]:sub(currentCol)
+                        moveLeft()
+                    end
+                    
+                elseif code==delete then
+                    if currentCol==#contentLines[currentLine]+1 and currentLine<#contentLines then
+                        cursorX = math.min(w/2,currentCol)
+                        contentLines[currentLine+1]=contentLines[currentLine]..contentLines[currentLine+1]
+                        table.remove(contentLines, currentLine)
+                        
+                    else
+                        contentLines[currentLine]=contentLines[currentLine]:sub(1,currentCol-1)..contentLines[currentLine]:sub(currentCol+1)
+                    end
+                    
+                elseif code==menu then
+                    state = stateMenuEditor
+                    
+                else
+                    contentLines[currentLine] = contentLines[currentLine]:sub(1,currentCol-1)..unicode.char(value)..contentLines[currentLine]:sub(currentCol)
+                    cursorX = math.min(w, cursorX+1)
+                    currentCol = math.min(#contentLines[currentLine]+1, currentCol+1)
+                end
+            elseif state==stateMenuEditor then
+                handleKeysList(editorMenuList,code)
+                if code==menu then
+                    state=stateEditor
+                end
+            end
+        end
+    end
+end
 
 local picked = nil
 local pickedTypeCopy = 1
@@ -208,7 +407,8 @@ local menuActions = {
     end,
     
     edit = function()
-        
+        local fileName = currentPath..filesList.content[filesList.selected]
+        openEditor(fileName)        
     end,
     
     execute = function()
