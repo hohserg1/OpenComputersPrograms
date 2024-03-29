@@ -9,7 +9,7 @@ local delete = 211
 
 local gpu = component.proxy(component.list("gpu")())
 gpu.bind(({component.list("screen")()})[1])
-local w,h = gpu.getResolution()
+local w,h = 50,16--gpu.getResolution()
 
 local invoke = component.invoke
 local fs = {}
