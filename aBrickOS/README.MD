@@ -2,7 +2,9 @@
 ![](./logo.png)
 ## Overview
 This is extremely compact operation system for OpenComputers.
+
 Targets to minimal system requirements.
+
 Runs from eeprom.
 
 ## Features
@@ -27,7 +29,7 @@ Runs from eeprom.
 ## Installation
 If you have internet card, just execute `pastebin run HHwNLs39`.
 
-Otherwise you can just copy content of `boot_compressed.lua` to your disk and execute `flash -q boot_compressed.lua aBrickOS`
+Otherwise you can copy content of `boot_compressed.lua` to your disk and execute `flash -q boot_compressed.lua aBrickOS`
 
 ## Usage
 For navigate in any menu use [🠕] and [🠗] keys.
@@ -40,7 +42,7 @@ Key [≡] will open context menu or close opened context menu.
 
 "⬅" file item meaning back to top level folder.
 
-Context menu of "⬅" has items "new file","new folder","paste" and "lua".
+Context menu of "⬅" has items `new file`,`new folder`,`paste` and `lua`.
 
 Context menu of folder has items "rename","delete","copy","cut" and "lua".
 
