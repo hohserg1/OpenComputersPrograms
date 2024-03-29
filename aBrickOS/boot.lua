@@ -562,6 +562,7 @@ local menuActions = {
         
             gpu.set(6+#r,h," ")
             gpu.copy(1,1,w,h, 0, out and -2 or -1)
+            gpu.fill(1,out and h-1 or h, w,2," ")
             if out then
                 out = tostring(out)
                 gpu.set(1,h-1, out)
