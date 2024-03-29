@@ -191,8 +191,7 @@ local function input(request)
     gpu.set(w/2+1,h-1,request)
     gpu.set(w/2+1,h,">")
     while true do
-        gpu.setBackground(0xffffff)
-        gpu.set(27+#r,16," ")
+        gpu.set(w/2+2+#r,h,"█")
         local event,_,value,code,_ = computer.pullSignal()
         if event=="key_down" then
             if code==enter then
@@ -202,13 +201,11 @@ local function input(request)
             elseif value >= 32 and value <= 126 then
                 r=r..unicode.char(value)
             end
-            gpu.setBackground(0)
         elseif event=="clipboard" then
             r=r..value
         end
         gpu.set(w/2+2,h,r..(" "):rep(w/2))     
     end
-    gpu.setBackground(0)
     gpu.fill(w/2,h-2,w/2+1,3, " ")
     return r
 end
