@@ -496,6 +496,59 @@ local menuActions = {
     cut = function()
         picked={currentPath, filesList.content[filesList.selected]}
         pickedType = pickedTypeCut
+    end,
+    
+    lua = function()
+        state = stateLua
+        gpu.setForeground(0xffffff)
+        gpu.setBackground(0)
+        gpu.fill(1,1,w,h," ")
+        
+        while true do
+            local r=""
+            gpu.set(1,h,"lua>")
+            while true do
+                gpu.set(6+#r,h,"█")
+                local event,_,value,code,_ = computer.pullSignal()
+                if event=="key_down" then
+                    if code==enter then
+                        break
+                    elseif code==backspace then
+                        r=r:sub(1,-2)
+                    elseif value >= 32 and value <= 126 then
+                        r=r..unicode.char(value)
+                    end
+                elseif event=="clipboard" then
+                    r=r..value
+                end
+                gpu.set(6,h,r..(" "):rep(w))
+            end
+            
+            if r==":q" then
+                state = stateFiles
+                return
+            end
+            
+            local func, out = load("return "..r)
+            if not func then
+                func, out = load(r)
+            end
+            if func then
+                _, out = pcall(func)
+            end
+        
+            gpu.set(6+#r,h," ")
+            gpu.copy(1,1,w,h, 0, out and -2 or -1)
+            if out then
+                out = tostring(out)
+                gpu.set(1,h-1, out)
+                while #out>w do
+                    gpu.copy(1,1,w,h, 0, -1)
+                    out = out:sub(w+1)
+                    gpu.set(1,h-1, out)
+                end
+            end
+        end
     end
 }
 
@@ -526,7 +579,7 @@ local function updateMenuFilesContent()
     local menuContent = {}
     
     if e=="⬅" then
-        menuContent = {"new file", "new folder","paste"}
+        menuContent = {"new file", "new folder","paste", "lua"}
         filesMenuList.w = 14
         
     else
@@ -542,6 +595,7 @@ local function updateMenuFilesContent()
             menuContent[#menuContent+1] = "copy"
             menuContent[#menuContent+1] = "cut"
         end
+        menuContent[#menuContent+1] = "lua"
     end
     
     filesMenuList.content = menuContent
