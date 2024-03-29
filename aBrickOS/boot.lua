@@ -12,17 +12,49 @@ gpu.bind(({component.list("screen")()})[1])
 local w,h = 50,16--gpu.getResolution()
 
 local invoke = component.invoke
-local fs = {}
-local fsList = {}
-local fsComponentList = component.list("file") 
-for a in fsComponentList do
-    local name = invoke(a,"getLabel")
-    if not name then
-        name = a
+local fs
+local fsList
+local function refreshFSList()
+    fs = {}
+    fsList = {}
+    local fsComponentList = component.list("file") 
+    for a in fsComponentList do
+        local name = invoke(a,"getLabel")
+        if not name or #name==0 then
+            name = a
+        end
+        name = name.."/"
+        fsList[#fsList+1]=name
+        fs[#fs+1]=a
     end
-    name = name.."/"
-    fsList[#fsList+1]=name
-    fs[#fs+1]=a
+end
+refreshFSList()
+
+local function prettyError(failureMsg, err)
+    err = tostring(err):sub(-w+1)
+    gpu.setForeground(0)
+    gpu.setBackground(0xffffff)
+    local ww = math.max(13,math.max(#failureMsg,#err))+4
+    gpu.fill(w/2-ww/2,h/2-3,ww,7,"")
+    
+    gpu.setForeground(0xffffff)
+    gpu.setBackground(0)        
+    gpu.set(w/2-#failureMsg/2-1, h/2-2, " "..failureMsg.." ")
+    gpu.set(w/2-#err/2-1, h/2, " "..err.." ")
+    gpu.set(w/2-15/2, h/2+2, " press any key ")
+    while true do
+        local event = computer.pullSignal()
+        if event=="key_down" then
+            return
+        end
+    end
+end
+
+local function prettyErrorPCall(failureMsg, f, ...)
+    local ok,err = pcall(f,...)
+    if not ok then
+        prettyError(failureMsg, err)
+    end
 end
 
 local function drawList(self)
@@ -88,6 +120,10 @@ end
 local currentPath = "/"
 local currentFilesystem = -1
 
+local function fsPrefix(path)
+    return "/"..fsList[currentFilesystem]:sub(1,-2)..path
+end
+
 local function fsInvoke(...)
     return invoke(fs[currentFilesystem], ...)
 end
@@ -103,7 +139,7 @@ local filesList = {
         if currentFilesystem == -1 then
             gpu.set(1,1,"/")
         else
-            gpu.set(1,1,"/"..fsList[currentFilesystem]:sub(1,-2)..currentPath)
+            gpu.set(1,1,fsPrefix(currentPath))
         end
         gpu.set(1,2,("⠤"):rep(50))
     end,
@@ -124,6 +160,7 @@ local filesList = {
         if currentPath=="/" then
             if currentFilesystem ~= -1 then
                 currentFilesystem = -1
+                refreshFSList()
                 self.content = fsList
             end
         else
@@ -402,7 +439,7 @@ local menuActions = {
     end,
     
     paste = function()
-        fsInvoke("rename", picked[1]..picked[2], currentPath..picked[2])
+        fsInvoke(pickedType==pickedTypeCut and "rename" or "copy", picked[1]..picked[2], currentPath..picked[2])
         picked=nil
         filesList:updateContent()
     end,
@@ -414,24 +451,24 @@ local menuActions = {
     
     execute = function()
         local fileName = currentPath..filesList.content[filesList.selected]
-        local h = fsInvoke("open", fileName)
+        local file = fsInvoke("open", fileName)
         local code = ""
         while true do
-            local chunk = fsInvoke("read", h, math.huge)
+            local chunk = fsInvoke("read", file, math.huge)
             if chunk then
                 code=code..chunk
             else
                 break
             end
         end
-        local func, compileErr = load(code,fileName)
+        local func, compileErr = load(code,fsPrefix(fileName))
         if func then
             local ok, execErr = pcall(func)
             if not ok then
-                message("Execution error:", execErr)
+                prettyError("Execution error:", execErr)
             end
         else
-            message("Compilation error:", compileErr)
+            prettyError("Compilation error:", compileErr)
         end
     end,
     
@@ -443,9 +480,11 @@ local menuActions = {
     rename = function()
         local newName = input("new name:")
         if currentFilesystem ~= -1 then
-            fsInvoke("rename", currentPath..filesList.content[filesList.selected], currentPath..newName)
+            if not fsInvoke("rename", currentPath..filesList.content[filesList.selected], currentPath..newName) then
+                prettyErrorPCall("unable to rename file", error, "filesystem is readonly")
+            end
         else
-            invoke(fs[filesList.selected],"setLabel", newName)
+            prettyErrorPCall("unable to rename disk", invoke,fs[filesList.selected],"setLabel", newName)
         end
         filesList:updateContent()
     end,
