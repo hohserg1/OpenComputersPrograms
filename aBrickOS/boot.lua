@@ -422,7 +422,7 @@ end
 
 local picked = nil
 local pickedTypeCopy = 1
-local pickedTypeCut = 1
+local pickedTypeCut = 2
 local pickedType = pickedTypeCopy
 
 local menuActions = {
