@@ -506,7 +506,10 @@ local filesMenuList = {
     content={},
     selected = 1,
     scrollShift = 0,
-    drawAddition = function()end,
+    drawAddition = function(self)
+        gpu.set(self.x,self.y, ("▀"):rep(self.w))
+        gpu.set(self.x,self.y+self.h-1, ("▄"):rep(self.w))
+    end,
     
     choose = function(self)
         menuActions[self.content[self.selected]]()
@@ -525,10 +528,14 @@ local function updateMenuFilesContent()
     
     if e=="⬅" then
         menuContent = {"new file", "new folder","paste"}
+        filesMenuList.w = 14
         
     else
         if e:sub(-1,-1) ~= "/" then
             menuContent = {"edit","execute"}
+            filesMenuList.w = 11
+        else
+            filesMenuList.w = 10        
         end
         menuContent[#menuContent+1] = "rename"
         if currentFilesystem ~= -1 then
