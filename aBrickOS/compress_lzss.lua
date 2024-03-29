@@ -143,13 +143,10 @@ return lzss
 local lzss = load(lzss, "=lzss.lua")
 lzss = lzss and lzss() or error("This program requires Lua 5.3 or higher")
 
-local path = os.getenv("_")
-path = path:sub(1,path:find("/[^/]*$"))
+local args = {...}
 
-local file, data = io.open(path.."boot_minified.lua", "r")
+local file, data = io.open(args[1], "r")
 data = file:read("*a")
 file:close()
 
-file = io.open(path.."boot_compressed.lua", "w")
-file:write(lzss.getSXF(lzss.compress(data)))
-file:close()
+io.write(lzss.getSXF(lzss.compress(data)))
