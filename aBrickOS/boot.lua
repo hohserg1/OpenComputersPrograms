@@ -9,7 +9,11 @@ local delete = 211
 
 local gpu = component.proxy(component.list("gpu")())
 gpu.bind(({component.list("screen")()})[1])
-local w,h = 50,16--gpu.getResolution()
+local w,h = gpu.getResolution()--50,16
+
+local function srep(str, amount)
+    return str:rep(amount)
+end
 
 local invoke = component.invoke
 local fs
@@ -130,19 +134,19 @@ local function fsInvoke(...)
 end
 
 local filesList = {
-    x=1,y=2,w=50,h=16,
+    x=1,y=2,w=w,h=h,
     fontColor=0xffffff,backColor=0,
     content = fsList,
     selected = 1,
     scrollShift = 0,
     drawAddition = function()
-        gpu.set(1,1,(" "):rep(50))
+        gpu.set(1,1,srep(" ",w))
         if currentFilesystem == -1 then
             gpu.set(1,1,"/")
         else
             gpu.set(1,1,fsPrefix(currentPath))
         end
-        gpu.set(1,2,("⠤"):rep(50))
+        gpu.set(1,2,srep("⠤",w))
     end,
     choose = function(self)   
         if currentFilesystem == -1 then
@@ -187,7 +191,7 @@ local function input(request)
     gpu.setForeground(0xffffff)
     gpu.setBackground(0)
     local r = ""
-    gpu.set(w/2+1,h-2,("⠤"):rep(w/2))
+    gpu.set(w/2+1,h-2,srep("⠤",w/2))
     gpu.set(w/2,h-2,"⢠⢸⢸",true)
     gpu.set(w/2+1,h-1,request)
     gpu.set(w/2+1,h,">")
@@ -205,7 +209,7 @@ local function input(request)
         elseif event=="clipboard" then
             r=r..value
         end
-        gpu.set(w/2+2,h,r..(" "):rep(w/2))     
+        gpu.set(w/2+2,h,r..srep(" ",w/2))     
     end
     gpu.fill(w/2,h-2,w/2+1,3, " ")
     return r
@@ -261,7 +265,7 @@ local function openEditor(fileName)
         
         gpu.fill(1,2,w,h," ")
         local topLine = currentLine-cursorY+1
-        local bottomLine = math.min(#contentLines, topLine+14)
+        local bottomLine = math.min(#contentLines, topLine+h-2)
         local y=2
         for i=topLine,bottomLine do
             gpu.set(1,y,contentLines[i]:sub(currentCol-cursorX+1))
@@ -274,7 +278,7 @@ local function openEditor(fileName)
         local selectedChar = contentLines[currentLine]:sub(currentCol,currentCol)
         gpu.set(cursorX,cursorY+1, #selectedChar==0 and " " or selectedChar)
         
-        gpu.set(#fileName+2,1,"  Ln:"..currentLine.." Col:"..currentCol..(" "):rep(50))
+        gpu.set(#fileName+2,1,"  Ln:"..currentLine.." Col:"..currentCol..srep(" ",w))
     end
     
     local function normalizeX()
@@ -319,14 +323,14 @@ local function openEditor(fileName)
     end
     
     local editorMenuList = {
-        x=50-14-1,y=5,w=9,h=4, 
+        x=w-14-1,y=5,w=9,h=4, 
         fontColor=0,backColor=0xffffff,
         content={"save","close"},
         selected = 1,
         scrollShift = 0,
         drawAddition = function(self)
-            gpu.set(self.x,self.y, ("▀"):rep(self.w))
-            gpu.set(self.x,self.y+self.h-1, ("▄"):rep(self.w))
+            gpu.set(self.x,self.y, srep("▀",self.w))
+            gpu.set(self.x,self.y+self.h-1, srep("▄",self.w))
         end,
         
         choose = function(self)
@@ -544,7 +548,7 @@ local menuActions = {
                 elseif event=="clipboard" then
                     r=r..value
                 end
-                gpu.set(6,h,r..(" "):rep(w))
+                gpu.set(6,h,r..srep(" ",w))
             end
             
             if r==":q" then
@@ -577,14 +581,14 @@ local menuActions = {
 }
 
 local filesMenuList = {
-    x=50-14-1,y=5,w=14,h=10, 
+    x=w-14-1,y=5,w=14,h=10, 
     fontColor=0,backColor=0xffffff,
     content={},
     selected = 1,
     scrollShift = 0,
     drawAddition = function(self)
-        gpu.set(self.x,self.y, ("▀"):rep(self.w))
-        gpu.set(self.x,self.y+self.h-1, ("▄"):rep(self.w))
+        gpu.set(self.x,self.y, srep("▀",self.w))
+        gpu.set(self.x,self.y+self.h-1, srep("▄",self.w))
     end,
     
     choose = function(self)
@@ -630,8 +634,8 @@ end
 
 local function drawDebugBorder()
     gpu.setBackground(0xffffff)
-    gpu.set(51,1,(" "):rep(16),true)
-    gpu.set(1,17,(" "):rep(51))
+    gpu.set(w+1,1,srep(" ",h),true)
+    gpu.set(1,h+1,srep(" ",w+1))
 end
 
 local function draw()
