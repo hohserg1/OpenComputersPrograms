@@ -186,28 +186,30 @@ local function input(request)
     gpu.setForeground(0xffffff)
     gpu.setBackground(0)
     local r = ""
-    gpu.set(26,14,("⠤"):rep(25))
-    gpu.set(25,14,"⢠⢸⢸",true)
-    gpu.set(26,15,request)
-    gpu.set(26,16,">")
+    gpu.set(w/2+1,h-2,("⠤"):rep(w/2))
+    gpu.set(w/2,h-2,"⢠⢸⢸",true)
+    gpu.set(w/2+1,h-1,request)
+    gpu.set(w/2+1,h,">")
     while true do
         gpu.setBackground(0xffffff)
         gpu.set(27+#r,16," ")
         local event,_,value,code,_ = computer.pullSignal()
-        if event=="key_down" or event=="clipboard" then
+        if event=="key_down" then
             if code==enter then
                 break
             elseif code==backspace then
                 r=r:sub(1,-2)
-            else
+            elseif value >= 32 and value <= 126 then
                 r=r..unicode.char(value)
             end
             gpu.setBackground(0)
-            gpu.set(27,16,r..(" "):rep(25))
-        end        
+        elseif event=="clipboard" then
+            r=r..value
+        end
+        gpu.set(w/2+2,h,r..(" "):rep(w/2))     
     end
     gpu.setBackground(0)
-    gpu.fill(25,14,26,3, " ")
+    gpu.fill(w/2,h-2,w/2+1,3, " ")
     return r
 end
 
@@ -406,7 +408,7 @@ local function openEditor(fileName)
                 elseif code==menu then
                     state = stateMenuEditor
                     
-                else
+                elseif value >= 32 and value <= 126 then
                     contentLines[currentLine] = contentLines[currentLine]:sub(1,currentCol-1)..unicode.char(value)..contentLines[currentLine]:sub(currentCol)
                     cursorX = math.min(w, cursorX+1)
                     currentCol = math.min(#contentLines[currentLine]+1, currentCol+1)
