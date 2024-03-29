@@ -5,6 +5,7 @@ local enter = 28
 local left = 203
 local menu = 221
 local backspace = 14
+local delete = 211
 
 local gpu = component.proxy(component.list("gpu")())
 gpu.bind(({component.list("screen")()})[1])
