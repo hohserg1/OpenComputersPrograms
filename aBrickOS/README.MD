@@ -1,7 +1,7 @@
 # aBrickOS
 ![](./logo.png)
 ## Overview
-This is extremely compact operation system for OpenComputers.
+This is extremely compact operating system for OpenComputers.
 
 Targets to minimal system requirements.
 
